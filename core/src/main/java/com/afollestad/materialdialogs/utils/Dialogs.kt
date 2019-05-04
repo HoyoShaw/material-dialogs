@@ -58,21 +58,31 @@ internal fun MaterialDialog.setWindowConstraints(
   val res = context.resources
   val (windowWidth, windowHeight) = wm.getWidthAndHeight()
 
-  val windowVerticalPadding = res.getDimensionPixelSize(
-      R.dimen.md_dialog_vertical_margin
-  )
-  val windowHorizontalPadding = res.getDimensionPixelSize(
-      R.dimen.md_dialog_horizontal_margin
-  )
-  val calculatedWidth = windowWidth - windowHorizontalPadding * 2
-  val actualMaxWidth =
-    maxWidth ?: res.getDimensionPixelSize(R.dimen.md_dialog_max_width)
+  if (!bottomSheet) {
+    val windowVerticalPadding = res.getDimensionPixelSize(
+        R.dimen.md_dialog_vertical_margin
+    )
+    view.maxHeight = windowHeight - windowVerticalPadding * 2
+  }
 
-  view.maxHeight = windowHeight - windowVerticalPadding * 2
   val lp = WindowManager.LayoutParams()
       .apply {
         copyFrom(win.attributes)
-        width = min(actualMaxWidth, calculatedWidth)
+
+        width = if (bottomSheet) {
+          WindowManager.LayoutParams.MATCH_PARENT
+        } else {
+          val windowHorizontalPadding = res.getDimensionPixelSize(
+              R.dimen.md_dialog_horizontal_margin
+          )
+          val calculatedWidth = windowWidth - windowHorizontalPadding * 2
+          val actualMaxWidth =
+            maxWidth ?: res.getDimensionPixelSize(R.dimen.md_dialog_max_width)
+          min(actualMaxWidth, calculatedWidth)
+        }
+        if (bottomSheet) {
+          height = WindowManager.LayoutParams.MATCH_PARENT
+        }
       }
   win.attributes = lp
 }

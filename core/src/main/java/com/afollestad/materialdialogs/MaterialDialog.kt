@@ -59,7 +59,8 @@ typealias DialogCallback = (MaterialDialog) -> Unit
 
 /** @author Aidan Follestad (afollestad) */
 class MaterialDialog(
-  val windowContext: Context
+  val windowContext: Context,
+  val bottomSheet: Boolean = false
 ) : Dialog(windowContext, inferTheme(windowContext).styleRes) {
 
   /**
