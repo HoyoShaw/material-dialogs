@@ -140,11 +140,24 @@ object MDUtil {
   @RestrictTo(LIBRARY_GROUP) fun resolveInt(
     context: Context,
     @AttrRes attr: Int,
-    defaultValue: Int
+    defaultValue: Int = 0
   ): Int {
     val a = context.theme.obtainStyledAttributes(intArrayOf(attr))
     try {
       return a.getInt(0, defaultValue)
+    } finally {
+      a.recycle()
+    }
+  }
+
+  @RestrictTo(LIBRARY_GROUP) fun resolveDimen(
+    context: Context,
+    @AttrRes attr: Int,
+    defaultValue: Float = 0f
+  ): Float {
+    val a = context.theme.obtainStyledAttributes(intArrayOf(attr))
+    try {
+      return a.getDimension(0, defaultValue)
     } finally {
       a.recycle()
     }

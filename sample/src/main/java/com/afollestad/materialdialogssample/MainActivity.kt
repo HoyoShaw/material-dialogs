@@ -32,7 +32,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_EXTERNAL_STORAGE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.runWithPermissions
+import com.afollestad.materialdialogs.BottomSheet
+import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.ModalDialog
 import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.callbacks.onShow
@@ -116,6 +119,15 @@ class MainActivity : AppCompatActivity() {
   private var bottomSheets = false
   private lateinit var prefs: SharedPreferences
 
+  private val currentDialogBehavior: DialogBehavior
+    get() {
+      return if (bottomSheets) {
+        BottomSheet()
+      } else {
+        ModalDialog
+      }
+    }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     prefs = getSharedPreferences(KEY_PREFS, MODE_PRIVATE)
     setTheme(
@@ -126,19 +138,20 @@ class MainActivity : AppCompatActivity() {
         }
     )
     debugMode = prefs.boolean(KEY_DEBUG_MODE, false)
+    debugMode = prefs.boolean(KEY_BOTTOM_SHEETS, false)
 
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
     basic.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         message(R.string.shareLocationPrompt)
         debugMode(debugMode)
       }
     }
 
     basic_titled.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         debugMode(debugMode)
@@ -146,7 +159,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree)
         negativeButton(R.string.disagree)
@@ -155,7 +168,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_stacked_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(text = "This is a long button")
         negativeButton(text = "So is this, these should stack")
@@ -164,7 +177,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_titled_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree)
@@ -174,7 +187,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_html_content.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.app_name)
         message(
             R.string.htmlContent,
@@ -188,14 +201,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_long.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         message(R.string.loremIpsum)
         debugMode(debugMode)
       }
     }
 
     basic_long_titled_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.loremIpsum)
         positiveButton(R.string.agree)
@@ -205,7 +218,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_icon.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         icon(R.mipmap.ic_launcher)
         message(R.string.useGoogleLocationServicesPrompt)
@@ -216,7 +229,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     basic_checkbox_titled_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree)
@@ -229,7 +242,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.socialNetworks) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -238,7 +251,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.socialNetworks) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -249,7 +262,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_dont_wait_positive.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.socialNetworks, waitForPositiveButton = false) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -259,7 +272,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_titled.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItems(R.array.socialNetworks) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -269,7 +282,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_titled_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItems(R.array.socialNetworks) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -281,7 +294,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_titled_message_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         message(R.string.useGoogleLocationServices)
         listItems(R.array.socialNetworks) { _, index, text ->
@@ -294,7 +307,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.states) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -303,7 +316,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.states) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -314,7 +327,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_titled.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.states)
         listItems(R.array.states) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -324,7 +337,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_titled_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.states)
         listItems(R.array.states) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -336,7 +349,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_items.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -345,7 +358,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_items_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         listItems(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
         }
@@ -356,7 +369,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_items_titled.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItems(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -366,7 +379,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_long_items_titled_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItems(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -378,7 +391,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_checkPrompt.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItems(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -391,7 +404,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     list_checkPrompt_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItems(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -406,7 +419,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     single_choice_titled.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsSingleChoice(R.array.socialNetworks, initialSelection = 1) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -416,7 +429,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     single_choice_buttons_titled.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsSingleChoice(R.array.socialNetworks, initialSelection = 2) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -427,7 +440,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     single_choice_long_items.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsSingleChoice(R.array.socialNetworks_longItems) { _, index, text ->
           toast("Selected item $text at index $index")
@@ -438,7 +451,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     single_choice_disabled_items.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsSingleChoice(
             R.array.socialNetworks, initialSelection = 1, disabledIndices = intArrayOf(1, 3)
@@ -451,7 +464,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     multiple_choice.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsMultiChoice(
             R.array.socialNetworks, initialSelection = intArrayOf(1, 3)
@@ -463,7 +476,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     multiple_choice_buttons.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsMultiChoice(
             R.array.socialNetworks, initialSelection = intArrayOf(1, 3)
@@ -476,7 +489,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     multiple_choice_long_items.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsMultiChoice(
             R.array.socialNetworks_longItems, initialSelection = intArrayOf(0, 2)
@@ -489,7 +502,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     multiple_choice_disabled_items.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.socialNetworks)
         listItemsMultiChoice(
             R.array.socialNetworks,
@@ -504,7 +517,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     buttons_stacked.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(text = "Hello World")
@@ -515,7 +528,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     buttons_stacked_checkboxPrompt.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(text = "Hello World")
@@ -529,7 +542,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     buttons_neutral.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree)
@@ -540,7 +553,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     buttons_callbacks.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree) { _ ->
@@ -557,7 +570,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     misc_dialog_callbacks.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         positiveButton(R.string.agree)
@@ -570,7 +583,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     input.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         input(
             hint = "Type something",
@@ -585,7 +598,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     input_message.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         message(R.string.useGoogleLocationServicesPrompt)
         input(
@@ -602,7 +615,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     input_counter.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         input(
             hint = "Type something",
@@ -618,7 +631,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     input_check_prompt.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.useGoogleLocationServices)
         input(
             hint = "Type something",
@@ -640,7 +653,7 @@ class MainActivity : AppCompatActivity() {
     custom_view_webview.setOnClickListener { showWebViewDialog() }
 
     colorChooser_primary.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.primary_colors)
         colorChooser(
             ColorPalette.Primary,
@@ -655,7 +668,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     colorChooser_accent.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.accent_colors)
         colorChooser(
             ColorPalette.Accent,
@@ -678,7 +691,7 @@ class MainActivity : AppCompatActivity() {
           intArrayOf(Color.MAGENTA, Color.CYAN)
       )
 
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.custom_colors)
         colorChooser(topLevel, subLevel) { _, color ->
           val colorStr =
@@ -695,7 +708,7 @@ class MainActivity : AppCompatActivity() {
     colorChooser_customColorsNoSub.setOnClickListener {
       val topLevel = intArrayOf(Color.RED, Color.YELLOW, Color.BLUE)
 
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.custom_colors)
         colorChooser(topLevel) { _, color ->
           toast("Selected color: ${color.toHex()}")
@@ -707,7 +720,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     colorChooser_primary_customRgb.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.custom_colors_rgb)
         colorChooser(
             colors = ColorPalette.Primary,
@@ -723,7 +736,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     colorChooser_primary_customArgb.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(R.string.custom_colors_argb)
         colorChooser(
             colors = ColorPalette.Primary,
@@ -750,7 +763,7 @@ class MainActivity : AppCompatActivity() {
     folder_chooser_filter.setOnClickListener { showFolderChooserFilter() }
 
     date_picker.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         datePicker { _, date ->
           toast("Selected date: ${date.formatDate()}")
         }
@@ -759,7 +772,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     time_picker.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(text = "Select Time")
         timePicker { _, time ->
           toast("Selected time: ${time.formatTime()}")
@@ -769,7 +782,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     datetime_picker.setOnClickListener {
-      MaterialDialog(this, bottomSheet = bottomSheets).show {
+      MaterialDialog(this, currentDialogBehavior).show {
         title(text = "Select Date and Time")
         dateTimePicker(requireFutureDateTime = true) { _, dateTime ->
           toast("Selected date/time: ${dateTime.formatDateTime()}")
@@ -780,7 +793,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showCustomViewDialog() {
-    val dialog = MaterialDialog(this, bottomSheet = bottomSheets).show {
+    val dialog = MaterialDialog(this, currentDialogBehavior).show {
       title(R.string.googleWifi)
       customView(R.layout.custom_view, scrollable = true)
       positiveButton(R.string.connect) { dialog ->
@@ -806,7 +819,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showWebViewDialog() {
-    val dialog = MaterialDialog(this, bottomSheet = bottomSheets).show {
+    val dialog = MaterialDialog(this, currentDialogBehavior).show {
       customView(R.layout.custom_view_webview, noVerticalPadding = true)
       debugMode(debugMode)
     }
@@ -837,7 +850,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showFileChooser() = runWithPermissions(READ_EXTERNAL_STORAGE) {
-    MaterialDialog(this, bottomSheet = bottomSheets).show {
+    MaterialDialog(this, currentDialogBehavior).show {
       fileChooser { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
@@ -846,7 +859,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showFileChooserButtons() = runWithPermissions(WRITE_EXTERNAL_STORAGE) {
-    MaterialDialog(this, bottomSheet = bottomSheets).show {
+    MaterialDialog(this, currentDialogBehavior).show {
       fileChooser(allowFolderCreation = true) { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
@@ -857,7 +870,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showFileChooserFilter() = runWithPermissions(READ_EXTERNAL_STORAGE) {
-    MaterialDialog(this, bottomSheet = bottomSheets).show {
+    MaterialDialog(this, currentDialogBehavior).show {
       fileChooser(filter = { it.extension == "txt" }) { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
@@ -866,7 +879,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showFolderChooserButtons() = runWithPermissions(WRITE_EXTERNAL_STORAGE) {
-    MaterialDialog(this, bottomSheet = bottomSheets).show {
+    MaterialDialog(this, currentDialogBehavior).show {
       folderChooser(allowFolderCreation = true) { _, folder ->
         toast("Selected folder: ${folder.absolutePath}")
       }
@@ -877,7 +890,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun showFolderChooserFilter() = runWithPermissions(READ_EXTERNAL_STORAGE) {
-    MaterialDialog(this, bottomSheet = bottomSheets).show {
+    MaterialDialog(this, currentDialogBehavior).show {
       folderChooser(filter = { it.name.startsWith("a", true) }) { _, folder ->
         toast("Selected folder: ${folder.absolutePath}")
       }

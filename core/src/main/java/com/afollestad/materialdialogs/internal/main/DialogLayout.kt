@@ -46,7 +46,7 @@ import com.afollestad.materialdialogs.utils.isVisible
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class DialogLayout(
+class DialogLayout(
   context: Context,
   attrs: AttributeSet?
 ) : FrameLayout(context, attrs) {
@@ -74,7 +74,10 @@ internal class DialogLayout(
     buttonsLayout = findViewById(R.id.md_button_layout)
   }
 
-  internal fun invalidateDividers(
+  /**
+   * Shows or hides the top and bottom dividers, which separate the title, content, and buttons.
+   */
+  fun invalidateDividers(
     scrolledDown: Boolean,
     atBottom: Boolean
   ) {

@@ -18,16 +18,12 @@ package com.afollestad.materialdialogs.utils
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.view.View
-import android.view.WindowManager
-import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.annotation.Px
 import androidx.annotation.RestrictTo
 import androidx.annotation.RestrictTo.Scope
 import androidx.annotation.StringRes
@@ -42,50 +38,6 @@ import com.afollestad.materialdialogs.customview.CUSTOM_VIEW_NO_VERTICAL_PADDING
 import com.afollestad.materialdialogs.utils.MDUtil.maybeSetTextColor
 import com.afollestad.materialdialogs.utils.MDUtil.resolveDrawable
 import com.afollestad.materialdialogs.utils.MDUtil.resolveString
-import kotlin.math.min
-
-internal fun MaterialDialog.setWindowConstraints(
-  @Px maxWidth: Int? = null
-) {
-  if (maxWidth == 0) {
-    // Postpone
-    return
-  }
-
-  val win = window ?: return
-  win.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
-  val wm = win.windowManager ?: return
-  val res = context.resources
-  val (windowWidth, windowHeight) = wm.getWidthAndHeight()
-
-  if (!bottomSheet) {
-    val windowVerticalPadding = res.getDimensionPixelSize(
-        R.dimen.md_dialog_vertical_margin
-    )
-    view.maxHeight = windowHeight - windowVerticalPadding * 2
-  }
-
-  val lp = WindowManager.LayoutParams()
-      .apply {
-        copyFrom(win.attributes)
-
-        width = if (bottomSheet) {
-          WindowManager.LayoutParams.MATCH_PARENT
-        } else {
-          val windowHorizontalPadding = res.getDimensionPixelSize(
-              R.dimen.md_dialog_horizontal_margin
-          )
-          val calculatedWidth = windowWidth - windowHorizontalPadding * 2
-          val actualMaxWidth =
-            maxWidth ?: res.getDimensionPixelSize(R.dimen.md_dialog_max_width)
-          min(actualMaxWidth, calculatedWidth)
-        }
-        if (bottomSheet) {
-          height = WindowManager.LayoutParams.MATCH_PARENT
-        }
-      }
-  win.attributes = lp
-}
 
 internal fun MaterialDialog.setDefaults() {
   // Background color and corner radius
@@ -189,23 +141,13 @@ internal fun MaterialDialog.hideKeyboard() {
 }
 
 internal fun MaterialDialog.colorBackground(@ColorInt color: Int): MaterialDialog {
-  val cornerRounding = dimen(attr = R.attr.md_corner_radius)
-  if (bottomSheet) {
-    window?.setBackgroundDrawable(null)
-    bottomSheetView?.background = GradientDrawable().apply {
-      cornerRadii = floatArrayOf(
-          cornerRounding, cornerRounding, // top left
-          cornerRounding, cornerRounding, // top right
-          0f, 0f, // bottom left
-          0f, 0f // bottom right
-      )
-      setColor(color)
-    }
-  } else {
-    window?.setBackgroundDrawable(GradientDrawable().apply {
-      cornerRadius = cornerRounding
-      setColor(color)
-    })
+  window?.let {
+    dialogBehavior.setBackgroundColor(
+        context = windowContext,
+        window = it,
+        view = view,
+        color = color
+    )
   }
   return this
 }

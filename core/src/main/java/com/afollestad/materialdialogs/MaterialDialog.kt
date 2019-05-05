@@ -21,13 +21,12 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.view.View
+import android.view.LayoutInflater
 import androidx.annotation.CheckResult
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.materialdialogs.Theme.Companion.inferTheme
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
 import com.afollestad.materialdialogs.WhichButton.NEUTRAL
@@ -38,17 +37,12 @@ import com.afollestad.materialdialogs.internal.list.DialogAdapter
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.list.getListAdapter
 import com.afollestad.materialdialogs.utils.hideKeyboard
-import com.afollestad.materialdialogs.utils.inflate
 import com.afollestad.materialdialogs.utils.isVisible
-import com.afollestad.materialdialogs.utils.onHide
 import com.afollestad.materialdialogs.utils.populateIcon
 import com.afollestad.materialdialogs.utils.populateText
 import com.afollestad.materialdialogs.utils.postShow
 import com.afollestad.materialdialogs.utils.preShow
 import com.afollestad.materialdialogs.utils.setDefaults
-import com.afollestad.materialdialogs.utils.setWindowConstraints
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 
 internal fun assertOneSet(
   method: String,
@@ -65,7 +59,7 @@ typealias DialogCallback = (MaterialDialog) -> Unit
 /** @author Aidan Follestad (afollestad) */
 class MaterialDialog(
   val windowContext: Context,
-  val bottomSheet: Boolean = false
+  val dialogBehavior: DialogBehavior = ModalDialog
 ) : Dialog(windowContext, inferTheme(windowContext).styleRes) {
 
   /**
@@ -92,12 +86,11 @@ class MaterialDialog(
     internal set
   var buttonFont: Typeface? = null
     internal set
+  var cancelOnTouchOutside: Boolean = true
+    internal set
   @Px private var maxWidth: Int? = null
 
   internal val view: DialogLayout
-  internal var bottomSheetView: View? = null
-  private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
-  private var cancelOnTouchOutside: Boolean = true
 
   internal val preShowListeners = mutableListOf<DialogCallback>()
   internal val showListeners = mutableListOf<DialogCallback>()
@@ -109,28 +102,11 @@ class MaterialDialog(
   private val neutralListeners = mutableListOf<DialogCallback>()
 
   init {
-    if (bottomSheet) {
-      val bottomSheet: CoordinatorLayout = inflate(R.layout.md_dialog_base_bottomsheet)
-      bottomSheet.setOnClickListener {
-        if (cancelOnTouchOutside) {
-          // Clicking outside the bottom sheet dismisses the dialog
-          dismiss()
-        }
-      }
-      bottomSheetView = bottomSheet.findViewById(R.id.md_root_bottom_sheet)
-      bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView!!)
-          .apply {
-            isHideable = true
-            onHide { dismiss() }
-          }
-      view = bottomSheet.findViewById(R.id.md_root)
-      setContentView(bottomSheet)
-    } else {
-      view = inflate(R.layout.md_dialog_base)
-      setContentView(view)
-    }
-
-    this.view.dialog = this
+    val layoutInflater = LayoutInflater.from(windowContext)
+    val rootView = dialogBehavior.createView(windowContext, layoutInflater, this)
+    setContentView(rootView)
+    this.view = dialogBehavior.getDialogLayout(rootView)
+        .also { it.dialog = this }
     setDefaults()
   }
 
@@ -349,7 +325,7 @@ class MaterialDialog(
       literal!!
     }
     if (shouldSetConstraints) {
-      setWindowConstraints(this.maxWidth)
+      setWindowConstraints()
     }
     return this
   }
@@ -362,7 +338,7 @@ class MaterialDialog(
 
   /** Opens the dialog. */
   override fun show() {
-    setWindowConstraints(maxWidth)
+    setWindowConstraints()
     preShow()
     super.show()
     postShow()
@@ -389,8 +365,7 @@ class MaterialDialog(
   }
 
   override fun dismiss() {
-    if (bottomSheetBehavior != null && bottomSheetBehavior!!.state != STATE_HIDDEN) {
-      bottomSheetBehavior!!.state = STATE_HIDDEN
+    if (dialogBehavior.onDismiss()) {
       return
     }
     hideKeyboard()
@@ -409,6 +384,17 @@ class MaterialDialog(
     }
     if (autoDismissEnabled) {
       dismiss()
+    }
+  }
+
+  private fun setWindowConstraints() {
+    window?.let {
+      dialogBehavior.setWindowConstraints(
+          context = windowContext,
+          maxWidth = maxWidth,
+          window = it,
+          view = view
+      )
     }
   }
 }
