@@ -30,6 +30,7 @@ dependencies {
 
   implementation 'androidx.recyclerview:recyclerview:' + versions.androidxRecyclerView
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
+  implementation 'com.google.android.material:material:' + versions.androidxMaterial
 }
 
 apply from: '../spotless.gradle'

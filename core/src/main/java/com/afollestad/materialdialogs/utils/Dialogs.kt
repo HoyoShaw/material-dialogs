@@ -189,9 +189,23 @@ internal fun MaterialDialog.hideKeyboard() {
 }
 
 internal fun MaterialDialog.colorBackground(@ColorInt color: Int): MaterialDialog {
-  window?.setBackgroundDrawable(GradientDrawable().apply {
-    cornerRadius = dimen(attr = R.attr.md_corner_radius)
-    setColor(color)
-  })
+  val cornerRounding = dimen(attr = R.attr.md_corner_radius)
+  if (bottomSheet) {
+    window?.setBackgroundDrawable(null)
+    bottomSheetView?.background = GradientDrawable().apply {
+      cornerRadii = floatArrayOf(
+          cornerRounding, cornerRounding, // top left
+          cornerRounding, cornerRounding, // top right
+          0f, 0f, // bottom left
+          0f, 0f // bottom right
+      )
+      setColor(color)
+    }
+  } else {
+    window?.setBackgroundDrawable(GradientDrawable().apply {
+      cornerRadius = cornerRounding
+      setColor(color)
+    })
+  }
   return this
 }

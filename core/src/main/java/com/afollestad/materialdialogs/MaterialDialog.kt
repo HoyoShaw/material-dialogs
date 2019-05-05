@@ -21,11 +21,13 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.annotation.CheckResult
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.afollestad.materialdialogs.Theme.Companion.inferTheme
 import com.afollestad.materialdialogs.WhichButton.NEGATIVE
 import com.afollestad.materialdialogs.WhichButton.NEUTRAL
@@ -44,6 +46,7 @@ import com.afollestad.materialdialogs.utils.postShow
 import com.afollestad.materialdialogs.utils.preShow
 import com.afollestad.materialdialogs.utils.setDefaults
 import com.afollestad.materialdialogs.utils.setWindowConstraints
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 internal fun assertOneSet(
   method: String,
@@ -89,7 +92,9 @@ class MaterialDialog(
     internal set
   @Px private var maxWidth: Int? = null
 
-  internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
+  internal val view: DialogLayout
+  internal var bottomSheetView: View? = null
+  private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
   internal val preShowListeners = mutableListOf<DialogCallback>()
   internal val showListeners = mutableListOf<DialogCallback>()
@@ -101,7 +106,17 @@ class MaterialDialog(
   private val neutralListeners = mutableListOf<DialogCallback>()
 
   init {
-    setContentView(view)
+    if (bottomSheet) {
+      val bottomSheet: CoordinatorLayout = inflate(R.layout.md_dialog_base_bottomsheet)
+      bottomSheetView = bottomSheet.findViewById<View>(R.id.md_root_bottom_sheet)
+          .also { bottomSheetBehavior = BottomSheetBehavior.from(it) }
+      view = bottomSheet.findViewById(R.id.md_root)
+      setContentView(bottomSheet)
+    } else {
+      view = inflate(R.layout.md_dialog_base)
+      setContentView(view)
+    }
+
     this.view.dialog = this
     setDefaults()
   }
