@@ -97,6 +97,7 @@ class MaterialDialog(
   internal val view: DialogLayout
   internal var bottomSheetView: View? = null
   private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+  private var cancelOnTouchOutside: Boolean = true
 
   internal val preShowListeners = mutableListOf<DialogCallback>()
   internal val showListeners = mutableListOf<DialogCallback>()
@@ -110,6 +111,12 @@ class MaterialDialog(
   init {
     if (bottomSheet) {
       val bottomSheet: CoordinatorLayout = inflate(R.layout.md_dialog_base_bottomsheet)
+      bottomSheet.setOnClickListener {
+        if (cancelOnTouchOutside) {
+          // Clicking outside the bottom sheet dismisses the dialog
+          dismiss()
+        }
+      }
       bottomSheetView = bottomSheet.findViewById(R.id.md_root_bottom_sheet)
       bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView!!)
           .apply {
@@ -376,6 +383,7 @@ class MaterialDialog(
 
   /** A fluent version of [setCanceledOnTouchOutside]. */
   fun cancelOnTouchOutside(cancelable: Boolean): MaterialDialog {
+    cancelOnTouchOutside = true
     this.setCanceledOnTouchOutside(cancelable)
     return this
   }
