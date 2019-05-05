@@ -32,7 +32,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_EXTERNAL_STORAGE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.runWithPermissions
-import com.afollestad.materialdialogs.BottomSheet
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog

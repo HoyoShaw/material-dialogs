@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.materialdialogs
+package com.afollestad.materialdialogs.bottomsheets
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,10 +23,13 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager.LayoutParams
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.afollestad.materialdialogs.DialogBehavior
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R.attr
+import com.afollestad.materialdialogs.R.id
+import com.afollestad.materialdialogs.R.layout
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.utils.MDUtil.resolveDimen
-import com.afollestad.materialdialogs.utils.onHide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 
@@ -42,7 +45,7 @@ class BottomSheet : DialogBehavior {
     dialog: MaterialDialog
   ): ViewGroup {
     val bottomSheet = layoutInflater.inflate(
-        R.layout.md_dialog_base_bottomsheet,
+        layout.md_dialog_base_bottomsheet,
         null,
         false
     ) as CoordinatorLayout
@@ -54,7 +57,7 @@ class BottomSheet : DialogBehavior {
       }
     }
 
-    bottomSheetView = bottomSheet.findViewById(R.id.md_root_bottom_sheet)
+    bottomSheetView = bottomSheet.findViewById(id.md_root_bottom_sheet)
     bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
         .apply {
           isHideable = true
@@ -65,7 +68,7 @@ class BottomSheet : DialogBehavior {
   }
 
   override fun getDialogLayout(root: ViewGroup): DialogLayout {
-    return root.findViewById(R.id.md_root) as DialogLayout
+    return root.findViewById(id.md_root) as DialogLayout
   }
 
   override fun setWindowConstraints(

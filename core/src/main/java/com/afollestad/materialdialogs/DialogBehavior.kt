@@ -25,8 +25,8 @@ import android.view.WindowManager.LayoutParams
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import com.afollestad.materialdialogs.internal.main.DialogLayout
+import com.afollestad.materialdialogs.utils.MDUtil.getWidthAndHeight
 import com.afollestad.materialdialogs.utils.MDUtil.resolveDimen
-import com.afollestad.materialdialogs.utils.getWidthAndHeight
 import kotlin.math.min
 
 /** @author Aidan Follestad (@afollestad) */

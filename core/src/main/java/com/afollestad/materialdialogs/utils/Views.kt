@@ -27,9 +27,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 
 @Suppress("UNCHECKED_CAST")
 internal fun <R : View> ViewGroup.inflate(
@@ -103,22 +100,4 @@ internal fun TextView.setGravityEndCompat() {
     this.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
   }
   this.gravity = Gravity.END or Gravity.CENTER_VERTICAL
-}
-
-internal fun BottomSheetBehavior<*>.onHide(block: () -> Unit) {
-  setBottomSheetCallback(object : BottomSheetCallback() {
-    override fun onSlide(
-      view: View,
-      dY: Float
-    ) = Unit
-
-    override fun onStateChanged(
-      view: View,
-      state: Int
-    ) {
-      if (state == STATE_HIDDEN) {
-        block()
-      }
-    }
-  })
 }

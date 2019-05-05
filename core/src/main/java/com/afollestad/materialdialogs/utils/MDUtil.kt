@@ -20,12 +20,14 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -265,5 +267,11 @@ object MDUtil {
         }
       }
     })
+  }
+
+  @RestrictTo(LIBRARY_GROUP) fun WindowManager.getWidthAndHeight(): Pair<Int, Int> {
+    val size = Point()
+    defaultDisplay.getSize(size)
+    return Pair(size.x, size.y)
   }
 }
