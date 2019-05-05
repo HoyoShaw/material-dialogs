@@ -40,6 +40,7 @@ import com.afollestad.materialdialogs.list.getListAdapter
 import com.afollestad.materialdialogs.utils.hideKeyboard
 import com.afollestad.materialdialogs.utils.inflate
 import com.afollestad.materialdialogs.utils.isVisible
+import com.afollestad.materialdialogs.utils.onHide
 import com.afollestad.materialdialogs.utils.populateIcon
 import com.afollestad.materialdialogs.utils.populateText
 import com.afollestad.materialdialogs.utils.postShow
@@ -47,6 +48,7 @@ import com.afollestad.materialdialogs.utils.preShow
 import com.afollestad.materialdialogs.utils.setDefaults
 import com.afollestad.materialdialogs.utils.setWindowConstraints
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 
 internal fun assertOneSet(
   method: String,
@@ -108,8 +110,12 @@ class MaterialDialog(
   init {
     if (bottomSheet) {
       val bottomSheet: CoordinatorLayout = inflate(R.layout.md_dialog_base_bottomsheet)
-      bottomSheetView = bottomSheet.findViewById<View>(R.id.md_root_bottom_sheet)
-          .also { bottomSheetBehavior = BottomSheetBehavior.from(it) }
+      bottomSheetView = bottomSheet.findViewById(R.id.md_root_bottom_sheet)
+      bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView!!)
+          .apply {
+            isHideable = true
+            onHide { dismiss() }
+          }
       view = bottomSheet.findViewById(R.id.md_root)
       setContentView(bottomSheet)
     } else {
@@ -375,6 +381,10 @@ class MaterialDialog(
   }
 
   override fun dismiss() {
+    if (bottomSheetBehavior != null && bottomSheetBehavior!!.state != STATE_HIDDEN) {
+      bottomSheetBehavior!!.state = STATE_HIDDEN
+      return
+    }
     hideKeyboard()
     super.dismiss()
   }
