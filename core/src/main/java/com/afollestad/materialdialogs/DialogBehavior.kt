@@ -34,6 +34,7 @@ interface DialogBehavior {
   /** Creates the root layout of the dialog. */
   fun createView(
     context: Context,
+    window: Window,
     layoutInflater: LayoutInflater,
     dialog: MaterialDialog
   ): ViewGroup
@@ -59,7 +60,8 @@ interface DialogBehavior {
 
   /**
    * Called when the dialog is being dismissed. Return true if you've handled
-   * it, and if super.dismiss() should NOT be called on the dialog.
+   * it, and if super.dismiss() should NOT be called on the dialog. This is an
+   * opportunity to cleanup resources, as well.
    */
   fun onDismiss(): Boolean
 }
@@ -69,6 +71,7 @@ object ModalDialog : DialogBehavior {
   @SuppressLint("InflateParams")
   override fun createView(
     context: Context,
+    window: Window,
     layoutInflater: LayoutInflater,
     dialog: MaterialDialog
   ): ViewGroup {

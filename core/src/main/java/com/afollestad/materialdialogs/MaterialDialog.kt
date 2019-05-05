@@ -103,7 +103,12 @@ class MaterialDialog(
 
   init {
     val layoutInflater = LayoutInflater.from(windowContext)
-    val rootView = dialogBehavior.createView(windowContext, layoutInflater, this)
+    val rootView = dialogBehavior.createView(
+        context = windowContext,
+        window = window!!,
+        layoutInflater = layoutInflater,
+        dialog = this
+    )
     setContentView(rootView)
     this.view = dialogBehavior.getDialogLayout(rootView)
         .also { it.dialog = this }

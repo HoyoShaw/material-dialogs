@@ -32,10 +32,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_EXTERNAL_STORAGE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.runWithPermissions
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.bottomsheets.expandBottomSheet
 import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.callbacks.onShow
@@ -138,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         }
     )
     debugMode = prefs.boolean(KEY_DEBUG_MODE, false)
-    debugMode = prefs.boolean(KEY_BOTTOM_SHEETS, false)
+    bottomSheets = prefs.boolean(KEY_BOTTOM_SHEETS, false)
 
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -663,6 +664,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -678,14 +680,15 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
 
     colorChooser_customColors.setOnClickListener {
-      val topLevel = intArrayOf(Color.TRANSPARENT, Color.RED, Color.YELLOW, Color.BLUE)
+      val topLevel = intArrayOf(TRANSPARENT, Color.RED, Color.YELLOW, Color.BLUE)
       val subLevel = arrayOf(
-          intArrayOf(Color.WHITE, Color.TRANSPARENT, Color.BLACK),
+          intArrayOf(Color.WHITE, TRANSPARENT, Color.BLACK),
           intArrayOf(Color.LTGRAY, Color.GRAY, Color.DKGRAY),
           intArrayOf(Color.GREEN),
           intArrayOf(Color.MAGENTA, Color.CYAN)
@@ -701,6 +704,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -715,6 +719,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -731,6 +736,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -748,6 +754,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -767,6 +774,7 @@ class MainActivity : AppCompatActivity() {
         datePicker { _, date ->
           toast("Selected date: ${date.formatDate()}")
         }
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -777,6 +785,7 @@ class MainActivity : AppCompatActivity() {
         timePicker { _, time ->
           toast("Selected time: ${time.formatTime()}")
         }
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -787,6 +796,7 @@ class MainActivity : AppCompatActivity() {
         dateTimePicker(requireFutureDateTime = true) { _, dateTime ->
           toast("Selected date/time: ${dateTime.formatDateTime()}")
         }
+        expandBottomSheet()
         debugMode(debugMode)
       }
     }
@@ -854,6 +864,7 @@ class MainActivity : AppCompatActivity() {
       fileChooser { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
+      expandBottomSheet()
       debugMode(debugMode)
     }
   }
@@ -865,6 +876,7 @@ class MainActivity : AppCompatActivity() {
       }
       negativeButton(android.R.string.cancel)
       positiveButton(R.string.select)
+      expandBottomSheet()
       debugMode(debugMode)
     }
   }
@@ -874,6 +886,7 @@ class MainActivity : AppCompatActivity() {
       fileChooser(filter = { it.extension == "txt" }) { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
+      expandBottomSheet()
       debugMode(debugMode)
     }
   }
@@ -885,6 +898,7 @@ class MainActivity : AppCompatActivity() {
       }
       negativeButton(android.R.string.cancel)
       positiveButton(R.string.select)
+      expandBottomSheet()
       debugMode(debugMode)
     }
   }
@@ -894,6 +908,7 @@ class MainActivity : AppCompatActivity() {
       folderChooser(filter = { it.name.startsWith("a", true) }) { _, folder ->
         toast("Selected folder: ${folder.absolutePath}")
       }
+      expandBottomSheet()
       debugMode(debugMode)
     }
   }

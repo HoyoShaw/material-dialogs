@@ -91,7 +91,7 @@ class DialogLayout(
   ) {
     val specWidth = getSize(widthMeasureSpec)
     var specHeight = getSize(heightMeasureSpec)
-    if (specHeight > maxHeight) {
+    if (maxHeight in 1 until specHeight) {
       specHeight = maxHeight
     }
 
