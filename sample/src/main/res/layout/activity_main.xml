@@ -403,6 +403,49 @@
         style="@style/SampleButton"
         />
 
+    <!-- Bottom Sheets -->
+
+    <TextView
+        android:text="Bottom Sheets"
+        style="@style/SampleHeader"
+        />
+
+    <Button
+        android:id="@+id/bottomsheet_info"
+        android:text="Informational"
+        style="@style/SampleButton"
+        />
+
+    <Button
+        android:id="@+id/bottomsheet_list"
+        android:text="Item List"
+        style="@style/SampleButton"
+        />
+
+    <Button
+        android:id="@+id/bottomsheet_grid"
+        android:text="Item Grid"
+        style="@style/SampleButton"
+        />
+
+    <Button
+        android:id="@+id/bottomsheet_customView"
+        android:text="Custom View"
+        style="@style/SampleButton"
+        />
+
+    <Button
+        android:id="@+id/bottomsheet_colorPicker"
+        android:text="Color Picker"
+        style="@style/SampleButton"
+        />
+
+    <Button
+        android:id="@+id/bottomsheet_dateTimePicker"
+        android:text="DateTime Picker"
+        style="@style/SampleButton"
+        />
+
   </LinearLayout>
 
 </ScrollView>

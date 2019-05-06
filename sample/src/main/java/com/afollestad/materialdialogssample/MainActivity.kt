@@ -32,7 +32,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_EXTERNAL_STORAGE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.runWithPermissions
+import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.ModalDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.callbacks.onShow
@@ -59,6 +62,12 @@ import kotlinx.android.synthetic.main.activity_main.basic_long_titled_buttons
 import kotlinx.android.synthetic.main.activity_main.basic_stacked_buttons
 import kotlinx.android.synthetic.main.activity_main.basic_titled
 import kotlinx.android.synthetic.main.activity_main.basic_titled_buttons
+import kotlinx.android.synthetic.main.activity_main.bottomsheet_colorPicker
+import kotlinx.android.synthetic.main.activity_main.bottomsheet_customView
+import kotlinx.android.synthetic.main.activity_main.bottomsheet_dateTimePicker
+import kotlinx.android.synthetic.main.activity_main.bottomsheet_grid
+import kotlinx.android.synthetic.main.activity_main.bottomsheet_info
+import kotlinx.android.synthetic.main.activity_main.bottomsheet_list
 import kotlinx.android.synthetic.main.activity_main.buttons_callbacks
 import kotlinx.android.synthetic.main.activity_main.buttons_neutral
 import kotlinx.android.synthetic.main.activity_main.buttons_stacked
@@ -689,10 +698,60 @@ class MainActivity : AppCompatActivity() {
         debugMode(debugMode)
       }
     }
+
+    bottomsheet_info.setOnClickListener {
+      MaterialDialog(this, BottomSheet()).show {
+        title(R.string.useGoogleLocationServices)
+        message(R.string.useGoogleLocationServicesPrompt)
+        positiveButton(R.string.agree)
+        negativeButton(R.string.disagree)
+        debugMode(debugMode)
+      }
+    }
+
+    bottomsheet_list.setOnClickListener {
+      TODO("Not implemented")
+    }
+
+    bottomsheet_grid.setOnClickListener {
+      TODO("Not implemented")
+    }
+
+    bottomsheet_customView.setOnClickListener {
+      showCustomViewDialog(BottomSheet())
+    }
+
+    bottomsheet_colorPicker.setOnClickListener {
+      MaterialDialog(this, BottomSheet()).show {
+        title(R.string.custom_colors_argb)
+        colorChooser(
+            colors = ColorPalette.Primary,
+            subColors = ColorPalette.PrimarySub,
+            allowCustomArgb = true,
+            showAlphaSelector = true
+        ) { _, color ->
+          toast("Selected color: ${color.toHex()}")
+        }
+        positiveButton(R.string.select)
+        negativeButton(android.R.string.cancel)
+
+        debugMode(debugMode)
+      }
+    }
+
+    bottomsheet_dateTimePicker.setOnClickListener {
+      MaterialDialog(this, BottomSheet()).show {
+        title(text = "Select Date and Time")
+        dateTimePicker(requireFutureDateTime = true) { _, dateTime ->
+          toast("Selected date/time: ${dateTime.formatDateTime()}")
+        }
+        debugMode(debugMode)
+      }
+    }
   }
 
-  private fun showCustomViewDialog() {
-    val dialog = MaterialDialog(this).show {
+  private fun showCustomViewDialog(dialogBehavior: DialogBehavior = ModalDialog) {
+    val dialog = MaterialDialog(this, dialogBehavior).show {
       title(R.string.googleWifi)
       customView(R.layout.custom_view, scrollable = true)
       positiveButton(R.string.connect) { dialog ->
