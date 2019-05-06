@@ -20,12 +20,15 @@ import android.graphics.Paint
 import android.graphics.Paint.Style.STROKE
 import android.util.AttributeSet
 import android.view.ViewGroup
+import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.R.attr
 import com.afollestad.materialdialogs.utils.MDUtil.dimenPx
 import com.afollestad.materialdialogs.utils.MDUtil.resolveColor
 
-internal abstract class BaseSubLayout(
+@RestrictTo(LIBRARY_GROUP)
+abstract class BaseSubLayout internal constructor(
   context: Context,
   attrs: AttributeSet? = null
 ) : ViewGroup(context, attrs) {

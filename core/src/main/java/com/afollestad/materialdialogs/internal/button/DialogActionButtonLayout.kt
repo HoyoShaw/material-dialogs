@@ -23,6 +23,8 @@ import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.View.MeasureSpec.getSize
 import android.view.View.MeasureSpec.makeMeasureSpec
+import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP
 import androidx.appcompat.widget.AppCompatCheckBox
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.WhichButton
@@ -39,7 +41,8 @@ import com.afollestad.materialdialogs.utils.isVisible
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class DialogActionButtonLayout(
+@RestrictTo(LIBRARY_GROUP)
+class DialogActionButtonLayout(
   context: Context,
   attrs: AttributeSet? = null
 ) : BaseSubLayout(context, attrs) {
@@ -66,8 +69,6 @@ internal class DialogActionButtonLayout(
   val visibleButtons: Array<DialogActionButton>
     get() = actionButtons.filter { it.isVisible() }
         .toTypedArray()
-
-  fun shouldBeVisible() = visibleButtons.isNotEmpty() || checkBoxPrompt.isVisible()
 
   override fun onFinishInflate() {
     super.onFinishInflate()
@@ -275,4 +276,12 @@ internal class DialogActionButtonLayout(
     stackButtons -> visibleButtons.size * buttonFrameSpecHeight
     else -> buttonFrameSpecHeight
   }
+}
+
+@RestrictTo(LIBRARY_GROUP)
+fun DialogActionButtonLayout?.shouldBeVisible(): Boolean {
+  if (this == null) {
+    return false
+  }
+  return visibleButtons.isNotEmpty() || checkBoxPrompt.isVisible()
 }

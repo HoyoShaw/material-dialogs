@@ -15,11 +15,8 @@
 
     <ImageView
         android:id="@+id/md_icon_title"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:scaleType="fitCenter"
-        android:visibility="gone"
         tools:ignore="ContentDescription"
+        style="@style/MD_Dialog_Icon"
         />
 
     <com.afollestad.materialdialogs.internal.rtl.RtlTextView
@@ -49,9 +46,7 @@
         android:id="@+id/md_checkbox_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="start|center_vertical"
-        android:minHeight="@dimen/md_checkbox_prompt_height"
-        android:visibility="gone"
+        style="@style/MD_Dialog_CheckPrompt"
         />
 
     <com.afollestad.materialdialogs.internal.button.DialogActionButton

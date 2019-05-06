@@ -35,6 +35,7 @@ import androidx.annotation.ColorInt
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.R
 import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout
+import com.afollestad.materialdialogs.internal.button.shouldBeVisible
 import com.afollestad.materialdialogs.utils.MDUtil.dimenPx
 import com.afollestad.materialdialogs.utils.dp
 import com.afollestad.materialdialogs.utils.isRtl
@@ -65,13 +66,17 @@ class DialogLayout(
   internal lateinit var dialog: MaterialDialog
   internal lateinit var titleLayout: DialogTitleLayout
   internal lateinit var contentLayout: DialogContentLayout
-  internal lateinit var buttonsLayout: DialogActionButtonLayout
+  internal var buttonsLayout: DialogActionButtonLayout? = null
 
   override fun onFinishInflate() {
     super.onFinishInflate()
     titleLayout = findViewById(R.id.md_title_layout)
     contentLayout = findViewById(R.id.md_content_layout)
     buttonsLayout = findViewById(R.id.md_button_layout)
+  }
+
+  fun attachButtonsLayout(buttonsLayout: DialogActionButtonLayout) {
+    this.buttonsLayout = buttonsLayout
   }
 
   /**
@@ -82,7 +87,7 @@ class DialogLayout(
     atBottom: Boolean
   ) {
     titleLayout.drawDivider = scrolledDown
-    buttonsLayout.drawDivider = atBottom
+    buttonsLayout?.drawDivider = atBottom
   }
 
   override fun onMeasure(
@@ -100,14 +105,14 @@ class DialogLayout(
         makeMeasureSpec(0, UNSPECIFIED)
     )
     if (buttonsLayout.shouldBeVisible()) {
-      buttonsLayout.measure(
+      buttonsLayout!!.measure(
           makeMeasureSpec(specWidth, EXACTLY),
           makeMeasureSpec(0, UNSPECIFIED)
       )
     }
 
     val titleAndButtonsHeight =
-      titleLayout.measuredHeight + buttonsLayout.measuredHeight
+      titleLayout.measuredHeight + (buttonsLayout?.measuredHeight ?: 0)
     val remainingHeight = specHeight - titleAndButtonsHeight
     contentLayout.measure(
         makeMeasureSpec(specWidth, EXACTLY),
@@ -116,7 +121,7 @@ class DialogLayout(
 
     val totalHeight = titleLayout.measuredHeight +
         contentLayout.measuredHeight +
-        buttonsLayout.measuredHeight
+        (buttonsLayout?.measuredHeight ?: 0)
     setMeasuredDimension(specWidth, totalHeight)
   }
 
@@ -139,12 +144,12 @@ class DialogLayout(
     )
 
     val buttonsTop =
-      measuredHeight - buttonsLayout.measuredHeight
+      measuredHeight - (buttonsLayout?.measuredHeight ?: 0)
     if (buttonsLayout.shouldBeVisible()) {
       val buttonsLeft = 0
       val buttonsRight = measuredWidth
       val buttonsBottom = measuredHeight
-      buttonsLayout.layout(
+      buttonsLayout!!.layout(
           buttonsLeft,
           buttonsTop,
           buttonsRight,
@@ -195,10 +200,10 @@ class DialogLayout(
     }
     canvas.verticalLine(CYAN, start = buttonsRight)
 
-    if (buttonsLayout.stackButtons) {
+    if (buttonsLayout?.stackButtons == true) {
       // Fill visible parts of buttons
-      var currentTop = buttonsLayout.top + dp(8)
-      for (button in buttonsLayout.visibleButtons) {
+      var currentTop = buttonsLayout!!.top + dp(8)
+      for (button in buttonsLayout!!.visibleButtons) {
         val currentBottom = currentTop + dp(36)
         canvas.box(
             CYAN,
@@ -212,18 +217,18 @@ class DialogLayout(
       }
 
       // Blue line over the top of the buttons layout
-      canvas.horizontalLine(BLUE, start = buttonsLayout.top.toFloat())
+      canvas.horizontalLine(BLUE, start = buttonsLayout!!.top.toFloat())
 
       // Red line over the top edge of the buttons
-      val buttonsTop = buttonsLayout.top.toFloat() + dp(8)
+      val buttonsTop = buttonsLayout!!.top.toFloat() + dp(8)
       val buttonsBottom = measuredHeight.toFloat() - dp(8)
       canvas.horizontalLine(RED, start = buttonsTop)
       canvas.horizontalLine(RED, start = buttonsBottom)
-    } else {
+    } else if (buttonsLayout != null) {
       // Fill visible parts of buttons
-      for (button in buttonsLayout.visibleButtons) {
-        val top = buttonsLayout.top + button.top.toFloat() + dp(8)
-        val bottom = buttonsLayout.bottom.toFloat() - dp(8)
+      for (button in buttonsLayout!!.visibleButtons) {
+        val top = buttonsLayout!!.top + button.top.toFloat() + dp(8)
+        val bottom = buttonsLayout!!.bottom.toFloat() - dp(8)
         val left = button.left.toFloat() + dp(4)
         val right = button.right.toFloat() - dp(4)
         canvas.box(
@@ -237,7 +242,7 @@ class DialogLayout(
       }
 
       // Magenta line over the top of the buttons layout
-      canvas.horizontalLine(MAGENTA, start = buttonsLayout.top.toFloat())
+      canvas.horizontalLine(MAGENTA, start = buttonsLayout!!.top.toFloat())
       // Red line over the top and bottom edge of the buttons
       val buttonsTop = measuredHeight.toFloat() - (dp(52) - dp(8))
       val buttonsBottom = measuredHeight.toFloat() - dp(8)

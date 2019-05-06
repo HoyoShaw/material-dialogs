@@ -28,6 +28,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.annotation.RestrictTo
+import androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +49,8 @@ import com.afollestad.materialdialogs.utils.updatePadding
  *
  * @author Aidan Follestad (afollestad)
  */
-internal class DialogContentLayout(
+@RestrictTo(LIBRARY_GROUP)
+class DialogContentLayout(
   context: Context,
   attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
