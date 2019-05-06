@@ -17,29 +17,8 @@ package com.afollestad.materialdialogs.bottomsheets
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
-
-internal fun BottomSheetBehavior<*>.onHide(block: () -> Unit) {
-  setBottomSheetCallback(object : BottomSheetCallback() {
-    override fun onSlide(
-      view: View,
-      dY: Float
-    ) = Unit
-
-    override fun onStateChanged(
-      view: View,
-      state: Int
-    ) {
-      if (state == STATE_HIDDEN) {
-        block()
-      }
-    }
-  })
-}
 
 internal fun BottomSheetBehavior<*>.animatePeekHeight(
   dest: Int,
@@ -53,7 +32,7 @@ internal fun BottomSheetBehavior<*>.animatePeekHeight(
   }
   animateValues(peekHeight, dest, duration, onUpdate = {
     peekHeight = it
-  })
+  }).start()
 }
 
 private fun animateValues(

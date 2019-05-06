@@ -247,7 +247,7 @@ object MDUtil {
     )
   }
 
-  @RestrictTo(LIBRARY_GROUP) fun <T : View> T.waitForLayout(block: T.() -> Unit) {
+  @RestrictTo(LIBRARY_GROUP) fun <T : View> T.waitForWidth(block: T.() -> Unit) {
     if (measuredWidth > 0 && measuredHeight > 0) {
       this.block()
       return
@@ -263,7 +263,29 @@ object MDUtil {
         }
         if (measuredWidth > 0 && measuredHeight > 0) {
           lastWidth = measuredWidth
-          this@waitForLayout.block()
+          this@waitForWidth.block()
+        }
+      }
+    })
+  }
+
+  @RestrictTo(LIBRARY_GROUP) fun <T : View> T.waitForHeight(block: T.() -> Unit) {
+    if (measuredWidth > 0 && measuredHeight > 0) {
+      this.block()
+      return
+    }
+
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+      var lastHeight: Int? = null
+
+      override fun onGlobalLayout() {
+        if (lastHeight != null && lastHeight == measuredHeight) {
+          viewTreeObserver.removeOnGlobalLayoutListener(this)
+          return
+        }
+        if (measuredWidth > 0 && measuredHeight > 0) {
+          lastHeight = measuredHeight
+          this@waitForHeight.block()
         }
       }
     })

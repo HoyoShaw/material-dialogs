@@ -18,7 +18,7 @@ package com.afollestad.materialdialogs.internal.main
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ScrollView
-import com.afollestad.materialdialogs.utils.waitForLayout
+import com.afollestad.materialdialogs.utils.waitForWidth
 
 /**
  * A [ScrollView] which reports whether or not it's scrollable based on whether the content
@@ -39,7 +39,7 @@ internal class DialogScrollView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    waitForLayout {
+    waitForWidth {
       invalidateDividers()
       invalidateOverScroll()
     }

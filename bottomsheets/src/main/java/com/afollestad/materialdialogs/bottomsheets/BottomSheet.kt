@@ -18,7 +18,9 @@ package com.afollestad.materialdialogs.bottomsheets
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager.LayoutParams
@@ -27,10 +29,12 @@ import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.utils.MDUtil.getWidthAndHeight
-import com.afollestad.materialdialogs.utils.MDUtil.waitForLayout
+import com.afollestad.materialdialogs.utils.MDUtil.waitForHeight
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
-import kotlin.math.max
+import java.lang.Float.isNaN
+import kotlin.math.abs
 import kotlin.math.min
 
 /** @author Aidan Follestad (@afollestad) */
@@ -51,43 +55,73 @@ class BottomSheet : DialogBehavior {
     layoutInflater: LayoutInflater,
     dialog: MaterialDialog
   ): ViewGroup {
-    this.dialog = dialog
     rootView = layoutInflater.inflate(
         R.layout.md_dialog_base_bottomsheet,
         null,
         false
     ) as CoordinatorLayout
 
-    bottomSheetView = rootView!!.findViewById(R.id.md_root_bottom_sheet)
-    bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
-        .apply {
-          isHideable = true
-          onHide { dialog.dismiss() }
-        }
+    this.dialog = dialog
+    this.bottomSheetView = rootView!!.findViewById(R.id.md_root_bottom_sheet)
 
     val (_, windowHeight) = window.windowManager.getWidthAndHeight()
-    val actualMinPeek = if (minimumPeekHeightRatio != null) {
+    val desiredPeekHeight = if (minimumPeekHeightRatio != null) {
       (windowHeight * minimumPeekHeightRatio!!).toInt()
     } else {
       minimumPeekHeight
     } ?: (windowHeight * DEFAULT_PEEK_HEIGHT_RATIO).toInt()
 
-    bottomSheetBehavior?.peekHeight = actualMinPeek
-    bottomSheetView?.waitForLayout {
-      if (this.measuredHeight >= actualMinPeek) {
+    setupBottomSheetBehavior(desiredPeekHeight)
+    bottomSheetView?.waitForHeight {
+      if (this.measuredHeight >= desiredPeekHeight) {
         bottomSheetBehavior?.animatePeekHeight(
-            dest = min(actualMinPeek, windowHeight),
+            dest = min(desiredPeekHeight, windowHeight),
             duration = LAYOUT_PEEK_CHANGE_DURATION_MS
         )
       } else {
         bottomSheetBehavior?.animatePeekHeight(
-            dest = max(this.measuredHeight, actualMinPeek),
+            dest = min(this.measuredHeight, desiredPeekHeight),
             duration = LAYOUT_PEEK_CHANGE_DURATION_MS
         )
       }
     }
 
     return rootView!!
+  }
+
+  private fun setupBottomSheetBehavior(minPeekHeight: Int) {
+    bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
+        .apply {
+          isHideable = true
+          peekHeight = minPeekHeight
+        }
+    bottomSheetBehavior!!.setBottomSheetCallback(object : BottomSheetCallback() {
+      override fun onSlide(
+        view: View,
+        dY: Float
+      ) {
+        val percentage = if (isNaN(dY)) 0f else abs(dY)
+        val peekHeight = bottomSheetBehavior?.peekHeight ?: return
+        val diff = peekHeight * percentage
+        val currentHeight = peekHeight - diff
+        Log.d(
+            "BottomSheet", "onSlide($dY)... " +
+            "peekHeight = ${bottomSheetBehavior?.peekHeight}, " +
+            "currentHeight = $currentHeight, " +
+            "bottomSheetView.height = ${bottomSheetView?.measuredHeight}"
+        )
+      }
+
+      override fun onStateChanged(
+        view: View,
+        state: Int
+      ) {
+        if (state == STATE_HIDDEN) {
+          dialog?.dismiss()
+          dialog = null
+        }
+      }
+    })
   }
 
   override fun getDialogLayout(root: ViewGroup): DialogLayout {
@@ -143,12 +177,14 @@ class BottomSheet : DialogBehavior {
   }
 
   override fun onDismiss(): Boolean {
-    if (bottomSheetBehavior != null && bottomSheetBehavior!!.state != STATE_HIDDEN) {
+    if (dialog != null &&
+        bottomSheetBehavior != null &&
+        bottomSheetBehavior!!.state != STATE_HIDDEN
+    ) {
       bottomSheetBehavior!!.state = STATE_HIDDEN
       bottomSheetBehavior = null
       bottomSheetView = null
       rootView = null
-      dialog = null
       return true
     }
     return false

@@ -64,12 +64,12 @@ internal fun <T : View> T?.updatePadding(
   this?.setPadding(left, top, right, bottom)
 }
 
-internal inline fun <T : View> T.waitForLayout(crossinline f: T.() -> Unit) =
+internal inline fun <T : View> T.waitForWidth(crossinline f: T.() -> Unit) =
   viewTreeObserver.apply {
     addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
         removeOnGlobalLayoutListener(this)
-        this@waitForLayout.f()
+        this@waitForWidth.f()
       }
     })
   }!!

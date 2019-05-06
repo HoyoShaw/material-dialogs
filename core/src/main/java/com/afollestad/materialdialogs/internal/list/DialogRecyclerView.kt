@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.utils.invalidateDividers
-import com.afollestad.materialdialogs.utils.waitForLayout
+import com.afollestad.materialdialogs.utils.waitForWidth
 
 typealias InvalidateDividersDelegate = (scrolledDown: Boolean, atBottom: Boolean) -> Unit
 
@@ -51,7 +51,7 @@ class DialogRecyclerView(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    waitForLayout {
+    waitForWidth {
       invalidateDividers()
       invalidateOverScroll()
     }
