@@ -168,11 +168,9 @@ class BottomSheet : DialogBehavior {
   }
 
   override fun onShow() {
-    rootView?.setOnClickListener {
-      if (dialog?.cancelOnTouchOutside == true) {
-        // Clicking outside the bottom sheet dismisses the dialog
-        dialog!!.dismiss()
-      }
+    if (dialog?.cancelOnTouchOutside == true) {
+      // Clicking outside the bottom sheet dismisses the dialog
+      rootView?.setOnClickListener { dialog?.dismiss() }
     }
   }
 

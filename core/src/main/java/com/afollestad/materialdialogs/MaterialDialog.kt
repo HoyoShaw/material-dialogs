@@ -111,7 +111,7 @@ class MaterialDialog(
     )
     setContentView(rootView)
     this.view = dialogBehavior.getDialogLayout(rootView)
-        .also { it.dialog = this }
+        .also { it.attachDialog(this) }
     setDefaults()
   }
 

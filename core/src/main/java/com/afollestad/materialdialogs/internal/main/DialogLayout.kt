@@ -75,6 +75,11 @@ class DialogLayout(
     buttonsLayout = findViewById(R.id.md_button_layout)
   }
 
+  fun attachDialog(dialog: MaterialDialog) {
+    titleLayout.dialog = dialog
+    buttonsLayout?.dialog = dialog
+  }
+
   fun attachButtonsLayout(buttonsLayout: DialogActionButtonLayout) {
     this.buttonsLayout = buttonsLayout
   }

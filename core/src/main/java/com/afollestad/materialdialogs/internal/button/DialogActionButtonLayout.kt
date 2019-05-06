@@ -81,7 +81,7 @@ class DialogActionButtonLayout(
 
     for ((i, btn) in actionButtons.withIndex()) {
       val which = WhichButton.fromIndex(i)
-      btn.setOnClickListener { dialogParent().dialog.onActionButtonClicked(which) }
+      btn.setOnClickListener { dialog.onActionButtonClicked(which) }
     }
   }
 
@@ -105,8 +105,8 @@ class DialogActionButtonLayout(
     }
 
     // Buttons plus any spacing around that makes up the "frame"
-    val baseContext = dialogParent().dialog.context
-    val appContext = dialogParent().dialog.windowContext
+    val baseContext = dialog.context
+    val appContext = dialog.windowContext
     for (button in visibleButtons) {
       button.update(
           baseContext = baseContext,
