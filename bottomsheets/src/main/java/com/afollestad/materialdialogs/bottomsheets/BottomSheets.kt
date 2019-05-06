@@ -47,7 +47,10 @@ fun MaterialDialog.collapseBottomSheet(): MaterialDialog {
 }
 
 /** Sets the peek (collapsed) height for the bottom sheet, in terms of pixel size. */
-fun MaterialDialog.setPeekHeight(@Px height: Int): MaterialDialog {
+fun MaterialDialog.setPeekHeight(
+  @Px height: Int,
+  animationDuration: Long = 1000
+): MaterialDialog {
   check(dialogBehavior is BottomSheet) {
     "This dialog is not a bottom sheet dialog."
   }
@@ -55,7 +58,10 @@ fun MaterialDialog.setPeekHeight(@Px height: Int): MaterialDialog {
     it.minimumPeekHeight = height
     it.minimumPeekHeightRatio = null
     val measuredHeight = it.bottomSheetView?.measuredHeight ?: height
-    it.bottomSheetBehavior?.peekHeight = min(measuredHeight, height)
+    it.bottomSheetBehavior?.animatePeekHeight(
+        dest = min(measuredHeight, height),
+        duration = animationDuration
+    )
   }
   return this
 }
@@ -64,7 +70,10 @@ fun MaterialDialog.setPeekHeight(@Px height: Int): MaterialDialog {
  * Sets the peek (collapsed) height for the bottom sheet, in terms of a fraction of
  * the total screen height.
  * */
-fun MaterialDialog.setPeekHeight(heightRatio: Float): MaterialDialog {
+fun MaterialDialog.setPeekHeight(
+  heightRatio: Float,
+  animationDuration: Long = 1000
+): MaterialDialog {
   check(dialogBehavior is BottomSheet) {
     "This dialog is not a bottom sheet dialog."
   }
@@ -77,7 +86,10 @@ fun MaterialDialog.setPeekHeight(heightRatio: Float): MaterialDialog {
     val (_, windowHeight) = window!!.windowManager.getWidthAndHeight()
     val ratioHeight = (windowHeight * heightRatio).toInt()
     val measuredHeight = it.bottomSheetView?.measuredHeight ?: ratioHeight
-    it.bottomSheetBehavior?.peekHeight = min(measuredHeight, ratioHeight)
+    it.bottomSheetBehavior?.animatePeekHeight(
+        dest = min(measuredHeight, ratioHeight),
+        duration = animationDuration
+    )
   }
   return this
 }

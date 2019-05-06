@@ -15,7 +15,10 @@
  */
 package com.afollestad.materialdialogs.bottomsheets
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -36,4 +39,35 @@ internal fun BottomSheetBehavior<*>.onHide(block: () -> Unit) {
       }
     }
   })
+}
+
+internal fun BottomSheetBehavior<*>.animatePeekHeight(
+  dest: Int,
+  duration: Long
+) {
+  if (dest == peekHeight) {
+    return
+  } else if (duration <= 0) {
+    peekHeight = dest
+    return
+  }
+  animateValues(peekHeight, dest, duration, onUpdate = {
+    peekHeight = it
+  })
+}
+
+private fun animateValues(
+  from: Int,
+  to: Int,
+  duration: Long,
+  onUpdate: (currentValue: Int) -> Unit
+): Animator {
+  return ValueAnimator.ofInt(from, to)
+      .apply {
+        this.interpolator = DecelerateInterpolator()
+        this.duration = duration
+        addUpdateListener {
+          onUpdate(it.animatedValue as Int)
+        }
+      }
 }

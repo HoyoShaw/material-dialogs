@@ -36,6 +36,7 @@ import com.afollestad.materialdialogs.callbacks.invokeAll
 import com.afollestad.materialdialogs.checkbox.getCheckBoxPrompt
 import com.afollestad.materialdialogs.customview.CUSTOM_VIEW_NO_VERTICAL_PADDING
 import com.afollestad.materialdialogs.utils.MDUtil.maybeSetTextColor
+import com.afollestad.materialdialogs.utils.MDUtil.resolveDimen
 import com.afollestad.materialdialogs.utils.MDUtil.resolveDrawable
 import com.afollestad.materialdialogs.utils.MDUtil.resolveString
 
@@ -146,7 +147,8 @@ internal fun MaterialDialog.colorBackground(@ColorInt color: Int): MaterialDialo
         context = windowContext,
         window = it,
         view = view,
-        color = color
+        color = color,
+        cornerRounding = resolveDimen(windowContext, attr = R.attr.md_corner_radius)
     )
   }
   return this

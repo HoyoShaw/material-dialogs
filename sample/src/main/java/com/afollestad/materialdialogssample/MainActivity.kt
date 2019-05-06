@@ -36,7 +36,6 @@ import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.bottomsheets.expandBottomSheet
 import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.callbacks.onShow
@@ -664,7 +663,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -680,7 +679,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -704,7 +703,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -719,7 +718,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -736,7 +735,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -754,7 +753,7 @@ class MainActivity : AppCompatActivity() {
         }
         positiveButton(R.string.select)
         negativeButton(android.R.string.cancel)
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -774,7 +773,7 @@ class MainActivity : AppCompatActivity() {
         datePicker { _, date ->
           toast("Selected date: ${date.formatDate()}")
         }
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -785,7 +784,7 @@ class MainActivity : AppCompatActivity() {
         timePicker { _, time ->
           toast("Selected time: ${time.formatTime()}")
         }
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -796,7 +795,7 @@ class MainActivity : AppCompatActivity() {
         dateTimePicker(requireFutureDateTime = true) { _, dateTime ->
           toast("Selected date/time: ${dateTime.formatDateTime()}")
         }
-        expandBottomSheet()
+
         debugMode(debugMode)
       }
     }
@@ -864,7 +863,7 @@ class MainActivity : AppCompatActivity() {
       fileChooser { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
-      expandBottomSheet()
+
       debugMode(debugMode)
     }
   }
@@ -876,7 +875,7 @@ class MainActivity : AppCompatActivity() {
       }
       negativeButton(android.R.string.cancel)
       positiveButton(R.string.select)
-      expandBottomSheet()
+
       debugMode(debugMode)
     }
   }
@@ -886,7 +885,7 @@ class MainActivity : AppCompatActivity() {
       fileChooser(filter = { it.extension == "txt" }) { _, file ->
         toast("Selected file: ${file.absolutePath}")
       }
-      expandBottomSheet()
+
       debugMode(debugMode)
     }
   }
@@ -898,7 +897,7 @@ class MainActivity : AppCompatActivity() {
       }
       negativeButton(android.R.string.cancel)
       positiveButton(R.string.select)
-      expandBottomSheet()
+
       debugMode(debugMode)
     }
   }
@@ -908,7 +907,7 @@ class MainActivity : AppCompatActivity() {
       folderChooser(filter = { it.name.startsWith("a", true) }) { _, folder ->
         toast("Selected folder: ${folder.absolutePath}")
       }
-      expandBottomSheet()
+
       debugMode(debugMode)
     }
   }

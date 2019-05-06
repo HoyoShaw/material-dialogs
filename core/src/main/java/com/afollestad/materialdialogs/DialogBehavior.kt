@@ -26,7 +26,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.utils.MDUtil.getWidthAndHeight
-import com.afollestad.materialdialogs.utils.MDUtil.resolveDimen
 import kotlin.math.min
 
 /** @author Aidan Follestad (@afollestad) */
@@ -55,8 +54,12 @@ interface DialogBehavior {
     context: Context,
     window: Window,
     view: DialogLayout,
-    @ColorInt color: Int
+    @ColorInt color: Int,
+    cornerRounding: Float
   )
+
+  /** Called when the dialog is being shown. */
+  fun onShow()
 
   /**
    * Called when the dialog is being dismissed. Return true if you've handled
@@ -123,13 +126,16 @@ object ModalDialog : DialogBehavior {
     context: Context,
     window: Window,
     view: DialogLayout,
-    @ColorInt color: Int
+    @ColorInt color: Int,
+    cornerRounding: Float
   ) {
     window.setBackgroundDrawable(GradientDrawable().apply {
-      cornerRadius = resolveDimen(context, attr = R.attr.md_corner_radius)
+      cornerRadius = cornerRounding
       setColor(color)
     })
   }
+
+  override fun onShow() = Unit
 
   override fun onDismiss(): Boolean = false
 }

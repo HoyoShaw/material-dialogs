@@ -27,7 +27,6 @@ import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.afollestad.materialdialogs.utils.MDUtil.getWidthAndHeight
-import com.afollestad.materialdialogs.utils.MDUtil.resolveDimen
 import com.afollestad.materialdialogs.utils.MDUtil.waitForLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -42,6 +41,9 @@ class BottomSheet : DialogBehavior {
   internal var minimumPeekHeight: Int? = null
   internal var minimumPeekHeightRatio: Float? = null
 
+  private var rootView: CoordinatorLayout? = null
+  private var dialog: MaterialDialog? = null
+
   @SuppressLint("InflateParams")
   override fun createView(
     context: Context,
@@ -49,20 +51,14 @@ class BottomSheet : DialogBehavior {
     layoutInflater: LayoutInflater,
     dialog: MaterialDialog
   ): ViewGroup {
-    val bottomSheet = layoutInflater.inflate(
+    this.dialog = dialog
+    rootView = layoutInflater.inflate(
         R.layout.md_dialog_base_bottomsheet,
         null,
         false
     ) as CoordinatorLayout
 
-    bottomSheet.setOnClickListener {
-      if (dialog.cancelOnTouchOutside) {
-        // Clicking outside the bottom sheet dismisses the dialog
-        dialog.dismiss()
-      }
-    }
-
-    bottomSheetView = bottomSheet.findViewById(R.id.md_root_bottom_sheet)
+    bottomSheetView = rootView!!.findViewById(R.id.md_root_bottom_sheet)
     bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
         .apply {
           isHideable = true
@@ -79,13 +75,19 @@ class BottomSheet : DialogBehavior {
     bottomSheetBehavior?.peekHeight = actualMinPeek
     bottomSheetView?.waitForLayout {
       if (this.measuredHeight >= actualMinPeek) {
-        bottomSheetBehavior?.peekHeight = min(actualMinPeek, windowHeight)
+        bottomSheetBehavior?.animatePeekHeight(
+            dest = min(actualMinPeek, windowHeight),
+            duration = LAYOUT_PEEK_CHANGE_DURATION_MS
+        )
       } else {
-        bottomSheetBehavior?.peekHeight = max(this.measuredHeight, actualMinPeek)
+        bottomSheetBehavior?.animatePeekHeight(
+            dest = max(this.measuredHeight, actualMinPeek),
+            duration = LAYOUT_PEEK_CHANGE_DURATION_MS
+        )
       }
     }
 
-    return bottomSheet
+    return rootView!!
   }
 
   override fun getDialogLayout(root: ViewGroup): DialogLayout {
@@ -116,9 +118,9 @@ class BottomSheet : DialogBehavior {
     context: Context,
     window: Window,
     view: DialogLayout,
-    color: Int
+    color: Int,
+    cornerRounding: Float
   ) {
-    val cornerRounding = resolveDimen(context, attr = R.attr.md_corner_radius)
     window.setBackgroundDrawable(null)
     bottomSheetView?.background = GradientDrawable().apply {
       cornerRadii = floatArrayOf(
@@ -131,11 +133,22 @@ class BottomSheet : DialogBehavior {
     }
   }
 
+  override fun onShow() {
+    rootView?.setOnClickListener {
+      if (dialog?.cancelOnTouchOutside == true) {
+        // Clicking outside the bottom sheet dismisses the dialog
+        dialog!!.dismiss()
+      }
+    }
+  }
+
   override fun onDismiss(): Boolean {
     if (bottomSheetBehavior != null && bottomSheetBehavior!!.state != STATE_HIDDEN) {
       bottomSheetBehavior!!.state = STATE_HIDDEN
       bottomSheetBehavior = null
       bottomSheetView = null
+      rootView = null
+      dialog = null
       return true
     }
     return false
@@ -143,5 +156,6 @@ class BottomSheet : DialogBehavior {
 
   private companion object {
     private const val DEFAULT_PEEK_HEIGHT_RATIO = 0.6f
+    private const val LAYOUT_PEEK_CHANGE_DURATION_MS = 1000L
   }
 }

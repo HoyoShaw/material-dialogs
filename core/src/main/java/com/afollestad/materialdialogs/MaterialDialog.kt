@@ -345,6 +345,7 @@ class MaterialDialog(
   override fun show() {
     setWindowConstraints()
     preShow()
+    dialogBehavior.onShow()
     super.show()
     postShow()
   }
