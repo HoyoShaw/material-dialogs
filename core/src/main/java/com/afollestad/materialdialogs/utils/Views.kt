@@ -22,7 +22,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -45,34 +44,6 @@ internal fun <T> ViewGroup.inflate(
   @LayoutRes res: Int,
   root: ViewGroup? = this
 ) = LayoutInflater.from(context).inflate(res, root, false) as T
-
-internal fun <T : View> T?.updatePadding(
-  left: Int = this?.paddingLeft ?: 0,
-  top: Int = this?.paddingTop ?: 0,
-  right: Int = this?.paddingRight ?: 0,
-  bottom: Int = this?.paddingBottom ?: 0
-) {
-  if (this != null &&
-      left == this.paddingLeft &&
-      top == this.paddingTop &&
-      right == this.paddingRight &&
-      bottom == this.paddingBottom
-  ) {
-    // no change needed, don't want to invalidate layout
-    return
-  }
-  this?.setPadding(left, top, right, bottom)
-}
-
-internal inline fun <T : View> T.waitForWidth(crossinline f: T.() -> Unit) =
-  viewTreeObserver.apply {
-    addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-      override fun onGlobalLayout() {
-        removeOnGlobalLayoutListener(this)
-        this@waitForWidth.f()
-      }
-    })
-  }!!
 
 internal fun <T : View> T.isVisible(): Boolean {
   return if (this is Button) {

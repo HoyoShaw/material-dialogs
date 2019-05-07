@@ -39,8 +39,8 @@ import com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout
 import com.afollestad.materialdialogs.internal.list.DialogRecyclerView
 import com.afollestad.materialdialogs.utils.MDUtil.maybeSetTextColor
 import com.afollestad.materialdialogs.utils.MDUtil.resolveString
+import com.afollestad.materialdialogs.utils.MDUtil.updatePadding
 import com.afollestad.materialdialogs.utils.inflate
-import com.afollestad.materialdialogs.utils.updatePadding
 
 /**
  * The middle section of the dialog, between [DialogTitleLayout] and
@@ -57,12 +57,12 @@ class DialogContentLayout(
 
   private val rootLayout: DialogLayout?
     get() = parent as DialogLayout
-  private var scrollView: DialogScrollView? = null
   private var scrollFrame: ViewGroup? = null
   private var messageTextView: TextView? = null
 
-  internal var recyclerView: DialogRecyclerView? = null
-  internal var customView: View? = null
+  var scrollView: DialogScrollView? = null
+  var recyclerView: DialogRecyclerView? = null
+  var customView: View? = null
 
   fun setMessage(
     dialog: MaterialDialog,

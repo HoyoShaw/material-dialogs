@@ -710,7 +710,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     bottomsheet_list.setOnClickListener {
-      TODO("Not implemented")
+      // TODO add icons
+      MaterialDialog(this, BottomSheet()).show {
+        listItems(R.array.states) { _, index, text ->
+          toast("Selected item $text at index $index")
+        }
+        positiveButton(R.string.agree)
+        negativeButton(R.string.disagree)
+        debugMode(debugMode)
+      }
     }
 
     bottomsheet_grid.setOnClickListener {

@@ -54,9 +54,9 @@ internal fun MaterialDialog.setDefaults() {
 
 @RestrictTo(Scope.LIBRARY_GROUP)
 fun MaterialDialog.invalidateDividers(
-  scrolledDown: Boolean,
-  atBottom: Boolean
-) = view.invalidateDividers(scrolledDown, atBottom)
+  showTop: Boolean,
+  showBottom: Boolean
+) = view.invalidateDividers(showTop, showBottom)
 
 internal fun MaterialDialog.preShow() {
   val customViewNoVerticalPadding = config[CUSTOM_VIEW_NO_VERTICAL_PADDING] as? Boolean == true

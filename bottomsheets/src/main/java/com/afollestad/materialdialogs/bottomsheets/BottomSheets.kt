@@ -59,6 +59,7 @@ fun MaterialDialog.setPeekHeight(
     it.minimumPeekHeightRatio = null
     val measuredHeight = it.bottomSheetView?.measuredHeight ?: height
     it.bottomSheetBehavior?.animatePeekHeight(
+        view = view,
         dest = min(measuredHeight, height),
         duration = animationDuration
     )
@@ -87,6 +88,7 @@ fun MaterialDialog.setPeekHeight(
     val ratioHeight = (windowHeight * heightRatio).toInt()
     val measuredHeight = it.bottomSheetView?.measuredHeight ?: ratioHeight
     it.bottomSheetBehavior?.animatePeekHeight(
+        view = view,
         dest = min(measuredHeight, ratioHeight),
         duration = animationDuration
     )

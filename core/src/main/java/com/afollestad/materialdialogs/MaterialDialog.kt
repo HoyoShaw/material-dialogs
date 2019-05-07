@@ -90,7 +90,8 @@ class MaterialDialog(
     internal set
   @Px private var maxWidth: Int? = null
 
-  internal val view: DialogLayout
+  /** The root layout of the dialog. */
+  val view: DialogLayout
 
   internal val preShowListeners = mutableListOf<DialogCallback>()
   internal val showListeners = mutableListOf<DialogCallback>()

@@ -296,4 +296,22 @@ object MDUtil {
     defaultDisplay.getSize(size)
     return Pair(size.x, size.y)
   }
+
+  @RestrictTo(LIBRARY_GROUP) fun <T : View> T?.updatePadding(
+    left: Int = this?.paddingLeft ?: 0,
+    top: Int = this?.paddingTop ?: 0,
+    right: Int = this?.paddingRight ?: 0,
+    bottom: Int = this?.paddingBottom ?: 0
+  ) {
+    if (this != null &&
+        left == this.paddingLeft &&
+        top == this.paddingTop &&
+        right == this.paddingRight &&
+        bottom == this.paddingBottom
+    ) {
+      // no change needed, don't want to invalidate layout
+      return
+    }
+    this?.setPadding(left, top, right, bottom)
+  }
 }

@@ -12,16 +12,22 @@
       android:layout_height="wrap_content"
       android:clickable="true"
       android:focusable="true"
-      android:orientation="vertical"
       app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
       >
 
     <include
-        layout="@layout/md_dialog_base"
+        layout="@layout/md_dialog_base_no_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
   </FrameLayout>
+
+  <include
+      layout="@layout/md_dialog_stub_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

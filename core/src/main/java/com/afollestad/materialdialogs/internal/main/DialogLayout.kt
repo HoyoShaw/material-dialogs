@@ -63,10 +63,11 @@ class DialogLayout(
   internal val frameMarginVertical = dimenPx(R.dimen.md_dialog_frame_margin_vertical)
   internal val frameMarginVerticalLess = dimenPx(R.dimen.md_dialog_frame_margin_vertical_less)
 
-  internal lateinit var dialog: MaterialDialog
-  internal lateinit var titleLayout: DialogTitleLayout
-  internal lateinit var contentLayout: DialogContentLayout
-  internal var buttonsLayout: DialogActionButtonLayout? = null
+  lateinit var dialog: MaterialDialog
+  lateinit var titleLayout: DialogTitleLayout
+  lateinit var contentLayout: DialogContentLayout
+  var buttonsLayout: DialogActionButtonLayout? = null
+  private var isButtonsLayoutAChild: Boolean = true
 
   override fun onFinishInflate() {
     super.onFinishInflate()
@@ -82,17 +83,18 @@ class DialogLayout(
 
   fun attachButtonsLayout(buttonsLayout: DialogActionButtonLayout) {
     this.buttonsLayout = buttonsLayout
+    this.isButtonsLayoutAChild = false
   }
 
   /**
    * Shows or hides the top and bottom dividers, which separate the title, content, and buttons.
    */
   fun invalidateDividers(
-    scrolledDown: Boolean,
-    atBottom: Boolean
+    showTop: Boolean,
+    showBottom: Boolean
   ) {
-    titleLayout.drawDivider = scrolledDown
-    buttonsLayout?.drawDivider = atBottom
+    titleLayout.drawDivider = showTop
+    buttonsLayout?.drawDivider = showBottom
   }
 
   override fun onMeasure(
@@ -148,18 +150,23 @@ class DialogLayout(
         titleBottom
     )
 
-    val buttonsTop =
-      measuredHeight - (buttonsLayout?.measuredHeight ?: 0)
-    if (buttonsLayout.shouldBeVisible()) {
-      val buttonsLeft = 0
-      val buttonsRight = measuredWidth
-      val buttonsBottom = measuredHeight
-      buttonsLayout!!.layout(
-          buttonsLeft,
-          buttonsTop,
-          buttonsRight,
-          buttonsBottom
-      )
+    val buttonsTop: Int
+    if (isButtonsLayoutAChild) {
+      buttonsTop =
+        measuredHeight - (buttonsLayout?.measuredHeight ?: 0)
+      if (buttonsLayout.shouldBeVisible()) {
+        val buttonsLeft = 0
+        val buttonsRight = measuredWidth
+        val buttonsBottom = measuredHeight
+        buttonsLayout!!.layout(
+            buttonsLeft,
+            buttonsTop,
+            buttonsRight,
+            buttonsBottom
+        )
+      }
+    } else {
+      buttonsTop = measuredHeight
     }
 
     val contentLeft = 0
